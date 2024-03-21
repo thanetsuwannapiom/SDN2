@@ -1,0 +1,36 @@
+#สร้าง host ชื่อ red
+sudo ip netns add red
+sudo ip link add red-veth0 type veth peer name red-veth1
+sudo ip link set red-veth1 netns red
+sudo ip netns exec red ip addr add 10.10.20.1/24 dev red-veth1
+sudo ip netns exec red ip link set red-veth1 up
+
+#สร้าง host ชื่อ blue
+sudo ip netns add blue
+sudo ip link add blue-veth0 type veth peer name blue-veth1
+sudo ip link set blue-veth1 netns blue
+sudo ip netns exec blue ip addr add 10.10.20.2/24 dev blue-veth1
+sudo ip netns exec blue ip link set blue-veth1 up
+
+#open port
+sudo ifconfig red-veth0 up
+sudo ifconfig blue-veth0 up
+
+sudo ovs-vsctl add-br s1
+
+# เพิ่ม port red-vethe ลงใน bridge s1
+sudo ovs-vsctl add-port s1 red-veth0
+
+# เพิ่ม port blue-vethe ลงใน bridge s1
+sudo ovs-vsctl add-port s1 blue-veth0
+
+sudo ovs-ofctl -O OpenFlow13 add-flow s1 actions=normal
+
+# chack ping with ip port-name
+sudo ip netns exec blue ping 10.10.20.3
+
+DETORIC setup
+
+sudo ip netns delete red
+sudo ip netns delete blue
+sudo ovs-vsctl del-br s1

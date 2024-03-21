@@ -1,0 +1,36 @@
+sudo apt update
+sudo apt install default-jre
+sudo apt install default-jdk
+sudo snap install libxml2
+sudo apt-get install curl
+sudo apt-get install -y openvswitch-switch
+sudo apt-get install -y mininet
+sudo apt-get install libxml2-utils
+sudo apt install python3
+python3 --version
+
+tar xvzf opendaylight-15.3.tar.gz
+
+./bin/karaf
+
+feature:install odl-mdsal-apidocs
+feature:install odl-restconf
+feature:install odl-openflowplugin-flow-services-rest
+feature:install odl-ovsdb-southbound-impl-ui
+
+sudo apt-get install ansible git
+
+git clone https://github.com/containernet/containernet.git
+
+cd containernet/ansible
+
+sudo ansible-playbook -i "localhost," -c local install.yml
+
+cd ..
+
+sudo docker images
+sudo docker ps -a
+
+ถ้ารันไม่ได้ให้เช็คละลบให้หมด
+sudo docker ps -a
+docker rm -f mn.r1 ลบทุกอันที่เช็คขึ้
